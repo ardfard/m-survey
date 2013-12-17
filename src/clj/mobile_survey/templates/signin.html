@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Signin</title>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/signin.css">
+    </head>
+    <body>
+        <div class="container" >
+            <form class="form-signin" action="/signin"
+                  method="post" id="loginForm">
+                <h2 class="form-signin-heading">Please sign in</h2>
+                <input type="text" class="form-control"
+                       placeholder="Email address" name="email"
+                       id="email"
+                       title="Type a well formed email!"
+                       required autofocus>
+                <input type="password" class="form-control"
+                       placeholder="Password" name="password"
+                       id="password"
+                       title="Password is 6 or more alphanumerics characters" required>
+                <label class="checkbox">
+                    <input type="checkbox" value="remember-me">Remember me
+                </label>
+                <button class="btn btn-lg btn-primary btn-block" type="submit" value="Login"id="submit">Sign in</button>
+            </form>
+        </div>
+        <script class="js-script" src="js/mobile-survey.js"></script>
+        <script class="js-script">mobile_survey.signin.init();</script>
+    </body>
+</html>

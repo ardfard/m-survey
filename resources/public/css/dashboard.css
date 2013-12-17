@@ -1,0 +1,30 @@
+#main {
+}
+#hdr {
+    background-color: rgb(245, 244, 234);
+}
+
+#hdr hr{
+    margin-top: 5px;
+}
+
+#hdr-greeter {
+    margin-left: 30px;
+    font-family: helvetica, arial;
+    font-size: 20px;
+}
+
+#hdr-accountInfo {
+    margin-right: 30px;
+    margin-top: 6px;
+}
+
+#survey-info th{
+    vertical-align: top;
+    text-align: left;
+    width: 22%;
+}
+
+#progress-num {
+    margin-left: 10px;
+}

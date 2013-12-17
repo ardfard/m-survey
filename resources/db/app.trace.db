@@ -1,0 +1,9 @@
+11-05 17:35:00 jdbc[8]: exception
+org.h2.jdbc.JdbcSQLException: Table "users" not found; SQL statement:
+INSERT INTO "users" ("id", "first_name", "last_name", "pass") VALUES (?, ?, ?, ?) [42102-170]
+11-05 17:35:00 jdbc[8]: exception
+org.h2.jdbc.JdbcSQLException: Table "users" not found; SQL statement:
+INSERT INTO "users" ("id", "first_name", "last_name", "pass") VALUES (?, ?, ?, ?) [42102-170]
+11-05 17:35:00 jdbc[8]: exception
+org.h2.jdbc.JdbcSQLException: Table "users" not found; SQL statement:
+INSERT INTO "users" ("id", "first_name", "last_name", "pass") VALUES (?, ?, ?, ?) [42102-170]

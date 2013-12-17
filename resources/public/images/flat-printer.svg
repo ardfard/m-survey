@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg viewbox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient>
+<stop offset="0"/>
+<stop offset="1" stop-color="#fff"/>
+</linearGradient>
+</defs>
+<path d="m28.69387,7.36163h21.55231a2,2 0 0,1 2,2v19.33754a2,2 0 0,1 -2,2h-21.55231a2,2 0 0,1 -2-2v-19.33754a2,2 0 0,1 2-2" fill="#ccc" fill-rule="evenodd" stroke="#333" stroke-linejoin="round" stroke-width="3.22201" transform="matrix(1.000000,.000000,-.339266,.940691,.000000,.000000)"/>
+<path d="m6.52952,27.07895h46.74473a2,2 0 0,1 2,2v22.2721a2,2 0 0,1 -2,2h-46.74473a2,2 0 0,1 -2-2v-22.2721a2,2 0 0,1 2-2" fill="#7f7f7f" fill-rule="evenodd" stroke="#333" stroke-linejoin="round" stroke-width="3.125"/>
+<path d="m10.28779,44.96812h39.2282v8.27751h-39.2282z" fill="#b3b3b3" fill-rule="evenodd" stroke="#333" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.125"/>
+</svg>
