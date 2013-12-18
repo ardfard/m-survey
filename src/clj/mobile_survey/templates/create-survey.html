@@ -27,7 +27,7 @@
                     <span style="float: right" id="hdr-accountInfo">User 1<a href="#">[sign out]</a></span>
                     <hr>
                </div>
-               <form action="/create" method="post" id="create-form" class="form-horizontal col-md-8 col-md-offset-2" role="form">
+               <form action="/create" method="post" id="create-form" class="form-horizontal col-md-8 col-md-offset-2" role="form" enctype="multipart/form-data">
                     <legend>Create Survey</legend>
                     <fieldset>
 
@@ -55,14 +55,14 @@
                     <div class="form-group">
                         <label for="select-input-number" class="col-md-2 control-label">Insert Number(s)</label>
                         <div id="select-input-number" class="col-md-6">
-                            <input type="radio" name="selectNumber" id="input-from-text-radio"> Input number(s)
+                            <input type="radio" name="selectNumber" id="input-from-text-radio" value="from-text" checked> Input number(s)
                             <textarea type="tel"
                                    name="numbersText"
                                    id="numbers-input"
                                    class="form-control"
-                                   disabled="disabled"></textarea>
-                            <input type="radio" name="selectNumber" id="input-from-file-radio" checked="False"> From a file
-                            <input name="numbersFile" type="file" id="upload">
+                                   ></textarea>
+                            <input type="radio" name="selectNumber" value="from-file" id="input-from-file-radio"> From a file
+                            <input name="numbersFile" type="file" id="upload" disabled>
                         </div>
                     </div>
 
@@ -79,8 +79,8 @@
                     <div class="form-group">
                       <label for="incentiveOption" class="col-md-2 control-label" >Incentive option</label>
                       <div col="col-md-6">
-                        <input type="radio" name="incentiveRadio"> None
-                        <input type="radio" name="incentiveRadio"> Bonus
+                        <input type="radio" name="incentiveOption" value="None" checked> None
+                        <input type="radio" value="Bonus" name="incentiveOption"> Bonus
                       </div>
                     <br>
                     <br>

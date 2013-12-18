@@ -4,12 +4,14 @@
             [hiccup.core :refer [html]]
             [noir.response :refer [redirect]]
             [noir.session :as session]
+            [noir.io :as io]
             [noir.util.route :refer [def-restricted-routes]]
             [mobile-survey.models.db :as models]
             [mobile-survey.templates :as t]
             [clj-time.format :as time-format]
             [clj-time.core :as time-core]
-            [clj-time.coerce :refer [from-date]]))
+            [clj-time.coerce :refer [from-date]]
+            [dk.ative.docjure.spreadsheet :as xls]))
 
 
 (defn create-js-script-for [view]
@@ -20,6 +22,11 @@
         (= view :detail)  '({})))
 
 (def status_code {0 "On progress", 1 "Complete"})
+
+(defn get-numbers-from-file [excel-file]
+  (let [wb (xls/load-workbook excel-file)
+        sheet (first (xls/sheet-seq wb))]
+    (map xls/read-cell (xls/cell-seq sheet))))
 
 (defn get-duration [since]
   (let [interval (time-core/interval since (time-core/now))]
@@ -39,20 +46,25 @@
   (models/create-survey! values)
   (models/get-survey-id (:user_id values) (:name values)))
 
-(defn create-survey [user-id name descriptions content incentiveOption numbersText numbersFile]
-    (if (= numbersText nil)
-        "Number is nil"
-        (let [survey-id (create-survey-helper {:name name
-                                :description descriptions
-                                :content content
-                                :incentive 0
-                                :user_id user-id
-                                })]
-            (doseq [number numbersText]
-              (models/create-number! {:survey_id survey-id
-                                     :number number
-                                     :reply "Kosong"}))
-            (redirect "/surveys"))))
+(defn handle-file-number [file-number]
+    (let [file-num (io/upload-file "/" file-number)]
+      (get-numbers-from-file file-num)))
+
+(defn create-survey [user-id name descriptions content selectNumber incentiveOption numbersText numbersFile]
+  (let [survey-id (create-survey-helper {:name name
+                          :description descriptions
+                          :content content
+                          :incentive 0
+                          :user_id user-id
+                          })
+        numbers (if (= selectNumber "file-text")
+                    numbersText
+                    (handle-file-number numbersFile))]
+      (doseq [number numbers]
+        (models/create-number! {:survey_id survey-id
+                               :number number
+                               :reply "Kosong"}))
+      (redirect "/surveys")))
 
 (defn detail-survey [id]
     (let [{:keys [name description created_on content status]} (models/get-survey-with-id id)
@@ -73,7 +85,7 @@
     (GET "/surveys" [] (surveys (session/get :user_id)))
     (GET "/create" [] (create-survey-form))
     (GET "/signout" [] (signout))
-    (POST "/create" [name descriptions content incentiveOption numbersText numbersFile]
-        (create-survey (session/get :user_id) name descriptions content incentiveOption numbersText numbersFile))
+    (POST "/create" [name descriptions content incentiveOption selectNumber numbersText numbersFile]
+        (create-survey (session/get :user_id) name descriptions content selectNumber incentiveOption numbersText numbersFile))
     (GET ["/detail/:id", :id #"[0-9]+"] [id]  (detail-survey (Integer/parseInt id)))
     (GET ["/delete/:id", :id #"[0-9]+"] [id] (delete-survey (Integer/parseInt id))))

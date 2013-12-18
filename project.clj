@@ -8,6 +8,7 @@
   :source-paths ["src/clj"]
 
   :dependencies [[org.clojure/clojure "1.5.1"]
+                 [org.clojure/clojure-contrib "1.2.0"]
                  [org.clojure/clojurescript "0.0-1913"]
                  [compojure "1.1.5"]
                  [domina "1.0.2"]
@@ -21,7 +22,8 @@
                  [lobos "1.0.0-beta1"]
                  [postgresql "9.1-901.jdbc4"]
                  [ring-server "0.3.1"]
-                 [clj-time "0.6.0"]]
+                 [clj-time "0.6.0"]
+                 [dk.ative/docjure "1.6.0"]]
 
   :exclusion [org.clojure/java.jdbc]
 
