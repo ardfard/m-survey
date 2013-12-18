@@ -2,8 +2,8 @@
   (:require [mobile-survey.models.db :refer [get-id-for-email get-pass-for-id]]
             [mobile-survey.signin.validators :refer [user-credential-errors]]
             [mobile-survey.signin.java.validators :refer [email-domain-errors]]
-            [mobile-survey.common :refer [template-path]]
             [net.cgrand.enlive-html :refer [deftemplate]]
+            [mobile-survey.templates :as t]
             [compojure.core :refer [defroutes GET POST]]
             [noir.session :as session]
             [noir.response :as resp]
@@ -28,10 +28,9 @@
   (session/clear!)
   (resp/redirect "/"))
 
-(deftemplate signin-template (str template-path "signin.html") [])
 
 (defn signin []
-    (signin-template) )
+    (t/signin-template) )
 
 (defroutes auth-routes
     (GET "/signin" [] (signin))
