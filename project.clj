@@ -23,7 +23,10 @@
                  [postgresql "9.1-901.jdbc4"]
                  [ring-server "0.3.1"]
                  [clj-time "0.6.0"]
-                 [dk.ative/docjure "1.6.0"]]
+                 [dk.ative/docjure "1.6.0"]
+                 [liberator "0.10.0"]
+                 [com.novemberain/langohr "2.0.0"]
+                 [clj-msgpack "0.2.0"]]
 
   :exclusion [org.clojure/java.jdbc]
 

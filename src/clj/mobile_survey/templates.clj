@@ -31,19 +31,26 @@
         [:td.createdOn] (content (let [formatter (time-format/formatter "dd/MM/yyyy")]
                                  (time-format/unparse formatter (from-date created_on))))
         [:td.status] (content status)
-        [:td :> :a.preview] (set-attr :href (str "detail/" id))
-        [:td :> :a.delete] (set-attr :href (str "delete/" id))))
+        [:td :> :a.preview] (set-attr :href (str "/detail/" id))
+        [:td :> :a.delete] (set-attr :href (str "/delete/" id))))
 
 (defsnippet create-snippet (str template-path "create-survey.html") [:#create-form]
     [])
 
 (defsnippet detail-snippet (str template-path "detail.html") [:#survey-info]
-    [name description cont duration status number-count number-replied]
+    [id name description cont duration status number-count number-replied]
     [:td.name] (content name)
     [:td.description] (content description)
     [:td.content] (content cont)
     [:td.duration] (content duration)
+    [:td :> :a.view-number] (set-attr :href (str "/numbers/" id))
     [:progress.progress] (set-attr :value number-replied :max number-count)
     [:span.progress-num] (content (str number-replied " of " number-count " responded."))
     )
 
+(defsnippet numbers-snippet (str template-path "numbers.html") [:#numbers-table]
+  [numbers]
+  [[:tr.item-row (nth-of-type 1)]]
+  (clone-for [[idx number] (map-indexed vector numbers)]
+    [:td.item-idx] (content (str (inc idx)))
+    [:td.item-number] (content number)))

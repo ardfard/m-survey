@@ -50,14 +50,11 @@
   (insert numbers
           (values number)))
 
-(defn create-numbers!
-  "Create numbers for a survey"
-  [numbers survey-id]
-  nil)
-
 (defn get-numbers-for-survey [survey-id]
-  (select numbers
-          (where {:survey_id survey-id})))
+  (for [{number :number} (select numbers
+                            (fields :number)
+                            (where {:survey_id survey-id}))]
+    number))
 
 (defn get-id-for-email [email]
   (:id (first (select users

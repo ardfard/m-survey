@@ -8,6 +8,7 @@
             [noir.util.route :refer [def-restricted-routes]]
             [mobile-survey.models.db :as models]
             [mobile-survey.templates :as t]
+            [mobile-survey.sms :as sms]
             [clj-time.format :as time-format]
             [clj-time.core :as time-core]
             [clj-time.coerce :refer [from-date]]
@@ -47,8 +48,8 @@
   (models/get-survey-id (:user_id values) (:name values)))
 
 (defn handle-file-number [file-number]
-    (let [file-num (io/upload-file "/" file-number)]
-      (get-numbers-from-file file-num)))
+    (let [file-num (io/upload-file "/temp/" file-number)]
+      (get-numbers-from-file (str "resources/public/temp/" (file-number :filename)))))
 
 (defn create-survey [user-id name descriptions content selectNumber incentiveOption numbersText numbersFile]
   (let [survey-id (create-survey-helper {:name name
@@ -58,23 +59,28 @@
                           :user_id user-id
                           })
         numbers (if (= selectNumber "file-text")
-                    numbersText
+                    (clojure.string/split (clojure.string/triml numbersText) #"\s+")
                     (handle-file-number numbersFile))]
       (doseq [number numbers]
         (models/create-number! {:survey_id survey-id
                                :number number
                                :reply "Kosong"}))
+      (sms/publish-survey! {:id survey-id :content content} numbers)
       (redirect "/surveys")))
 
 (defn detail-survey [id]
     (let [{:keys [name description created_on content status]} (models/get-survey-with-id id)
           duration (get-duration (from-date created_on))]
-        (t/base (t/detail-snippet name description content duration (status_code status) 100 10)
+        (t/base (t/detail-snippet id name description content duration (status_code status) 100 10)
                 (create-js-script-for :detail))))
 
 (defn delete-survey [id]
   (models/delete-survey! id)
   (redirect "/surveys"))
+
+(defn view-number [id]
+  (let [numbers (models/get-numbers-for-survey id)]
+    (t/base (t/numbers-snippet numbers) '({}))))
 
 (defn signout []
   (session/clear!)
@@ -88,4 +94,5 @@
     (POST "/create" [name descriptions content incentiveOption selectNumber numbersText numbersFile]
         (create-survey (session/get :user_id) name descriptions content selectNumber incentiveOption numbersText numbersFile))
     (GET ["/detail/:id", :id #"[0-9]+"] [id]  (detail-survey (Integer/parseInt id)))
-    (GET ["/delete/:id", :id #"[0-9]+"] [id] (delete-survey (Integer/parseInt id))))
+    (GET ["/delete/:id", :id #"[0-9]+"] [id] (delete-survey (Integer/parseInt id)))
+    (GET ["/numbers/:id", :id #"[0-9]+"] [id] (view-number (Integer/parseInt id))))
