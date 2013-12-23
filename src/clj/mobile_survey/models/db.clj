@@ -56,6 +56,12 @@
                             (where {:survey_id survey-id}))]
     number))
 
+(defn update-reply! [number survey-id reply]
+  (update numbers
+          (set-fields {:reply reply})
+          (where {:survey_id survey-id
+                  :number number})))
+
 (defn get-id-for-email [email]
   (:id (first (select users
                  (fields :id)

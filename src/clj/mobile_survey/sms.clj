@@ -6,7 +6,8 @@
             [langohr.queue :as lq]
             [langohr.consumers :as lc]
             [langohr.basic :as lb]
-            [clj-msgpack.core :as mp]))
+            [clj-msgpack.core :as mp]
+            [mobile-survey.models.db :as models]))
 
 (defresource test_liberator [name]
   :available-media-types ["text/plain"]
@@ -33,9 +34,9 @@
   (println (format "[consumer] Received a message: %r, delivery-tag: %d, content type: %s, type: %s"
                    (String. payload "UTF-8") delivery-tag content-type type)))
 
-(defn- survey-reply-handler [ch {:keys [content-type delivery-tag type] :as meta} ^bytes body]
-  (let [body (first (mp/unpack body))]
-    println body))
+(defn survey-reply-handler [_ _ ^bytes body]
+  (let [{:strs [id number reply]} (first (mp/unpack body))]
+    (models/update-reply! number id reply)))
 
 (defn- publish-survey-to-queue! [{:keys [id content]} responden channel queue]
   (lb/publish channel "" queue (mp/pack {"id" id "content" content "number" responden})

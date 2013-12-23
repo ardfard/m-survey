@@ -58,13 +58,13 @@
                           :incentive 0
                           :user_id user-id
                           })
-        numbers (if (= selectNumber "file-text")
+        numbers (if (= selectNumber "from-text")
                     (clojure.string/split (clojure.string/triml numbersText) #"\s+")
                     (handle-file-number numbersFile))]
       (doseq [number numbers]
         (models/create-number! {:survey_id survey-id
                                :number number
-                               :reply "Kosong"}))
+                               :reply ""}))
       (sms/publish-survey! {:id survey-id :content content} numbers)
       (redirect "/surveys")))
 
