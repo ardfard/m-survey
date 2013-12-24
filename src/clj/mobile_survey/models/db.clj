@@ -51,10 +51,9 @@
           (values number)))
 
 (defn get-numbers-for-survey [survey-id]
-  (for [{number :number} (select numbers
-                            (fields :number)
-                            (where {:survey_id survey-id}))]
-    number))
+  (select numbers
+          (fields :number)
+          (where {:survey_id survey-id})))
 
 (defn update-reply! [number survey-id reply]
   (update numbers

@@ -53,4 +53,5 @@
   [[:tr.item-row (nth-of-type 1)]]
   (clone-for [[idx number] (map-indexed vector numbers)]
     [:td.item-idx] (content (str (inc idx)))
-    [:td.item-number] (content number)))
+    [:td.item-number] (content (number :number))
+    [:td.item-reply] (content (number :reply))))
