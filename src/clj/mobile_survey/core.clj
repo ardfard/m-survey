@@ -70,8 +70,10 @@
 
 (defn detail-survey [id]
     (let [{:keys [name description created_on content status]} (models/get-survey-with-id id)
-          duration (get-duration (from-date created_on))]
-        (t/base (t/detail-snippet id name description content duration (status_code status) 100 10)
+          duration (get-duration (from-date created_on))
+          numbers (models/get-numbers-for-survey id)
+          replied-cnt (count (for [x numbers :when (not= x "")] x))]
+        (t/base (t/detail-snippet id name description content duration (status_code status) (count numbers) replied-cnt)
                 (create-js-script-for :detail))))
 
 (defn delete-survey [id]
