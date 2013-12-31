@@ -84,6 +84,22 @@
   (let [numbers (models/get-numbers-for-survey id)]
     (t/base (t/numbers-snippet numbers) '({}))))
 
+(defn create-report-file [survey-id]
+  (let [numbers (models/get-numbers-for-survey survey-id)
+        wb (xls/create-workbook "report" (cons ["Number" "Reply"]
+                                           (for [{:keys [number reply]} numbers]
+                                             [number reply])))
+        sheet (xls/select-sheet "report" wb)
+        header-row (first (xls/row-seq sheet))]
+    (do
+      (xls/set-row-style! header-row (xls/create-cell-style! wb {:background :yellow,
+                                                                 :font {:bold true}}))
+      (xls/save-workbook! (format "resources/public/temp/report_%d.xlsx" survey-id) wb))))
+
+(defn download-report-file [survey-id]
+  (create-report-file survey-id)
+  (redirect (format "/temp/report_%d.xlsx" survey-id)))
+
 (defn signout []
   (session/clear!)
   (redirect "/signin"))
@@ -97,4 +113,5 @@
         (create-survey (session/get :user_id) name descriptions content selectNumber incentiveOption numbersText numbersFile))
     (GET ["/detail/:id", :id #"[0-9]+"] [id]  (detail-survey (Integer/parseInt id)))
     (GET ["/delete/:id", :id #"[0-9]+"] [id] (delete-survey (Integer/parseInt id)))
-    (GET ["/numbers/:id", :id #"[0-9]+"] [id] (view-number (Integer/parseInt id))))
+    (GET ["/numbers/:id", :id #"[0-9]+"] [id] (view-number (Integer/parseInt id)))
+    (GET ["/download/report/:id", :id #"[0-9]+"] [id] (download-report-file (Integer/parseInt id))))
