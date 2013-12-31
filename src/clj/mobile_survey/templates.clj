@@ -46,6 +46,7 @@
     [:td :> :a.view-number] (set-attr :href (str "/numbers/" id))
     [:progress.progress] (set-attr :value number-replied :max number-count)
     [:span.progress-num] (content (str number-replied " of " number-count " responded."))
+    [:#download-report] (set-attr :onclick (format "location.href='/download/report/%d';" id))
     )
 
 (defsnippet numbers-snippet (str template-path "numbers.html") [:#numbers-table]
