@@ -9,15 +9,16 @@
              [compojure.core :refer [defroutes]]
              [shoreleave.middleware.rpc :refer [wrap-rpc]]
              [ring.middleware.params :refer [wrap-params]]
-             [mobile-survey.sms :refer [sms-routes listen-survey-replies]]))
+             [lobos.config :as dbconf]
+             ))
 
 (defn init
     "runs when the application starts and checks if the database
      schema exists, class schema actualize if not."
      []
+     (dbconf/init)
      (if-not (schema/actualized?)
-        (schema/actualize))
-     (listen-survey-replies))
+        (schema/actualize)))
 
 (defroutes static-routes
     (route/resources "/")
@@ -26,7 +27,7 @@
 (defn destroy []
     (println "shutting down..."))
 
-(def all-routes [auth-routes app-routes sms-routes static-routes])
+(def all-routes [auth-routes app-routes static-routes])
 
 (defn user-access [request]
     (session/get :user_id))

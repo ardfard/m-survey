@@ -109,8 +109,7 @@
     (GET "/surveys" [] (surveys (session/get :user_id)))
     (GET "/create" [] (create-survey-form))
     (GET "/signout" [] (signout))
-    (POST "/create" [name descriptions content incentiveOption selectNumber numbersText numbersFile]
-        (create-survey (session/get :user_id) name descriptions content selectNumber incentiveOption numbersText numbersFile))
+    (POST "/create" {params :params} (do (println params) (str params)))
     (GET ["/detail/:id", :id #"[0-9]+"] [id]  (detail-survey (Integer/parseInt id)))
     (GET ["/delete/:id", :id #"[0-9]+"] [id] (delete-survey (Integer/parseInt id)))
     (GET ["/numbers/:id", :id #"[0-9]+"] [id] (view-number (Integer/parseInt id)))

@@ -1,6 +1,5 @@
 (ns mobile-survey.sms
-  (:use [liberator.core :only [resource defresource]]
-        compojure.core)
+  (:use  compojure.core)
   (:require [langohr.core :as rmq]
             [langohr.channel :as lch]
             [langohr.queue :as lq]
@@ -8,26 +7,6 @@
             [langohr.basic :as lb]
             [clj-msgpack.core :as mp]
             [mobile-survey.models.db :as models]))
-
-(defresource test_liberator [name]
-  :available-media-types ["text/plain"]
-  :handle-ok (fn [_] (str "hello, " name)))
-
-(defresource register-sms-handler
-  :allowed-methods [:post]
-  :available-media-types ["text/plain"]
-  :exists? (fn [ctx]
-             (println (get-in ctx [:request :params :password]))
-             (= "ulima" (get-in ctx [:request :params :password])))
-  :handle-ok (fn [ctx] (str (ctx :request)))
-  :post! (fn [ctx]
-           (println (str (get-in ctx [:request :params :password]))))
-  )
-
-(defroutes sms-routes
-  (ANY "/test/:name" [name] (test_liberator name))
-  (ANY "/register-handler" [] register-sms-handler))
-
 
 (defn message-handler
   [ch {:keys [content-type delivery-tag type] :as meta} ^bytes payload]

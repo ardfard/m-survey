@@ -1,9 +1,10 @@
 (ns mobile-survey.models.db
+  (:require [lobos.config :refer [db-spec]])
   (:use korma.core
-        [korma.db :only (defdb)])
-  (:require [mobile-survey.models.schema :as schema]))
+        [korma.db :only (defdb)]
+        ))
 
-(defdb db schema/db-spec)
+(defdb db db-spec)
 
 (declare users surveys numbers)
 

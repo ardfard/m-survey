@@ -18,22 +18,19 @@
                  [shoreleave/shoreleave-remote "0.3.0"]
                  [com.cemerick/valip "0.3.2"]
                  [lib-noir "0.7.2"]
-                 [korma "0.3.0-RC5"]
+                 [org.clojure/java.jdbc "0.2.3"]
+                 [korma "0.3.0-RC6"]
                  [lobos "1.0.0-beta1"]
                  [postgresql "9.1-901.jdbc4"]
                  [ring-server "0.3.1"]
                  [clj-time "0.6.0"]
                  [dk.ative/docjure "1.6.0"]
-                 [liberator "0.10.0"]
                  [com.novemberain/langohr "2.0.0"]
+                 [environ "0.4.0"]
                  [clj-msgpack "0.2.0"]]
-
-  :exclusion [org.clojure/java.jdbc]
-
   :plugins [[lein-cljsbuild "0.3.3"]
             [lein-ring "0.8.7"]]
-
-  :ring {:handler mobile-survey.handler/app}
+  :ring {:handler mobile-survey.handler/app :init mobile-survey.handler/init}
 
   :cljsbuild {:crossovers [valip.core valip.predicates mobile-survey.signin.validators]
               :builds
