@@ -20,7 +20,10 @@
     [:#link-to-create-surveys] (set-attr :href "/create")
     [:body] (append js-script))
 
-(deftemplate signin-template (str template-path "signin.html") [])
+(deftemplate signin-template (str template-path "signin.html") []
+  [:div.flash] (let [flash-msg (session/flash-get :message)]
+              (if flash-msg (append flash-msg)
+                            nil)))
 
 (defsnippet list-survey (str template-path "list-survey.html") [:#survey-list]
     [surveys]

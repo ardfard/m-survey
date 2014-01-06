@@ -9,6 +9,9 @@
         <div class="container" >
             <form class="form-signin" action="/signin"
                   method="post" id="loginForm">
+                <div class="flash alert alert-danger alert-dismissable">
+                  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                </div>
                 <h2 class="form-signin-heading">Please sign in</h2>
                 <input type="text" class="form-control"
                        placeholder="Email address" name="email"
@@ -22,7 +25,7 @@
                 <button class="btn btn-lg btn-primary btn-block" type="submit" value="Login"id="submit">Sign in</button>
             </form>
         </div>
-        <script class="js-script" src="js/mobile-survey.js"></script>
-        <script class="js-script">mobile_survey.signin.init();</script>
+        <script type="text/javascript" src="/js/jquery.js"></script>
+        <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     </body>
 </html>

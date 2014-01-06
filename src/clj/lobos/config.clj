@@ -32,7 +32,9 @@
 
 (def db-spec (merge {:classname "org.postgresql.Driver"
                      :subprotocol "postgresql"
-                     :subname "//localhost:5432/mobile_survey"}
+                     :subname "//localhost:5432/mobile_survey"
+                     :user "ardfard"
+                     :password "lalilulelo"}
                     (get-db-spec-from-env)))
 
 (defn init []
