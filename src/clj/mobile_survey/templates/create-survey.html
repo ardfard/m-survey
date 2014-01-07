@@ -101,6 +101,7 @@
         <script type="text/javascript">
           var option = 'A'
           $(".add-option").on("click", function(){
+            event.preventDefault();
             $(".content").append('<div><label for="option'+option+'">('+option+')</label>\n<input name="option'+option+'" type="text"></div>')});
         </script>
     </body>
