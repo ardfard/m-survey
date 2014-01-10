@@ -20,8 +20,8 @@
       (boolean (user-credential-errors email password))
           (signin-failed "Email/Password is invalid!")
       (not id) (signin-failed "Email didn't exists!")
-      (not (crypt/compare password real-pass)) (signin-failed "Password for " email
-          " is wrong!")
+      (not (crypt/compare password real-pass)) (signin-failed (str "Password for " email
+          " is wrong!"))
       :else (do (session/put! :user_id id)
                 (resp/redirect "/surveys")))))
 

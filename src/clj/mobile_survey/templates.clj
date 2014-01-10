@@ -40,6 +40,9 @@
 (defsnippet create-snippet (str template-path "create-survey.html") [:#create-form]
     [])
 
+(defsnippet create-script  (str template-path "create-survey.html") [:#script-area]
+  [])
+
 (defsnippet detail-snippet (str template-path "detail.html") [:#survey-info]
     [id name description cont duration status number-count number-replied]
     [:td.name] (content name)

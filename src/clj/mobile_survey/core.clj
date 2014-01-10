@@ -17,7 +17,7 @@
 
 (defn create-js-script-for [view]
     (cond
-        (= view :create) '( {:tag :script, :attrs {:src "js/mobile-survey.js"}}
+        (= view :create) '({}) #_( {:tag :script, :attrs {:src "js/mobile-survey.js"}}
                             {:tag :script, :content ("mobile_survey.create_survey.init()")})
         (= view :surveys) '({:tag :script, :attrs {:src "js/mobile-survey.js"}})
         (= view :detail)  '({})))
@@ -41,7 +41,7 @@
       (t/base (t/list-survey survey-list) (create-js-script-for :surveys))))
 
 (defn create-survey-form []
-    (t/base (t/create-snippet) (create-js-script-for :create) ))
+    (t/base (t/create-snippet) (:content (first (t/create-script)))))
 
 (defn create-survey-helper [values]
   (models/create-survey! values)
