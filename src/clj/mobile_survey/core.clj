@@ -44,8 +44,7 @@
 (defn create-survey-form []
     (t/base (t/create-snippet) (:content (first (t/create-script)))))
 
-(defn create-survey-helper [values]
-  (println values)
+(defn create-survey [values]
   (models/create-survey! values)
   (models/get-survey-id (:user_id values) (:name values)))
 
@@ -53,8 +52,8 @@
     (let [file-num (io/upload-file "/temp/" file-number)]
       (get-numbers-from-file (str "resources/public/temp/" (file-number :filename)))))
 
-(defn create-survey [{:keys [user-id name descriptions content selectNumber
-                             incentiveOption numbersText numbersFile] :as params}]
+(defn create-survey-handler [{:keys [name descriptions content selectNumber
+                             incentiveOption numbersText numbersFile] :as params} user-id]
   (let [options (map val (dissoc params :user-id :name :descriptions :content :selectNumber
                                :incentiveOption :numbersText :numbersFile))
         option-letters (map #(format "(%s) " %) "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -63,11 +62,12 @@
                      (map #(apply str %))
                      (join \newline))
         content (str content \newline options)
-        survey-id (create-survey-helper {:name name
+        survey-id (create-survey {:name name
                           :description descriptions
                           :content content
                           :incentive 0
                           :user_id user-id
+                          :status 0
                           })
         numbers (if (= selectNumber "from-text")
                     (clojure.string/split (clojure.string/triml numbersText) #"\s+")
@@ -120,7 +120,7 @@
     (GET "/surveys" [] (surveys (session/get :user_id)))
     (GET "/create" [] (create-survey-form))
     (GET "/signout" [] (signout))
-    (POST "/create" {params :params} (create-survey params))
+    (POST "/create" {params :params} (create-survey-handler params (session/get :user_id)))
     (GET ["/detail/:id", :id #"[0-9]+"] [id]  (detail-survey (Integer/parseInt id)))
     (GET ["/delete/:id", :id #"[0-9]+"] [id] (delete-survey (Integer/parseInt id)))
     (GET ["/numbers/:id", :id #"[0-9]+"] [id] (view-number (Integer/parseInt id)))
