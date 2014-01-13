@@ -45,8 +45,9 @@
     (t/base (t/create-snippet) (:content (first (t/create-script)))))
 
 (defn create-survey-helper [values]
-  (models/create-survey! values)
-  (models/get-survey-id (:user_id values) (:name values)))
+  (println values)
+  #_(models/create-survey! values)
+  #_(models/get-survey-id (:user_id values) (:name values)))
 
 (defn handle-file-number [file-number]
     (let [file-num (io/upload-file "/temp/" file-number)]
@@ -72,11 +73,11 @@
                     (clojure.string/split (clojure.string/triml numbersText) #"\s+")
                     (handle-file-number numbersFile))]
       (doseq [number numbers]
-        (models/create-number! {:survey_id survey-id
+        #_(models/create-number! {:survey_id survey-id
                                :number number
                                :reply ""}))
-      (sms/publish-survey! {:id survey-id :content content} numbers)
-      (redirect "/surveys")))
+      #_(sms/publish-survey! {:id survey-id :content content} numbers)
+      #_(redirect "/surveys")))
 
 (defn detail-survey [id]
     (let [{:keys [name description created_on content status]} (models/get-survey-with-id id)
