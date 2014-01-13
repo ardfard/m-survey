@@ -37,7 +37,7 @@
         [:td :> :a.preview] (set-attr :href (str "/detail/" id))
         [:td :> :a.delete] (set-attr :href (str "/delete/" id))))
 
-(defsnippet create-snippet (str template-path "create-survey.html") [:#create-form]
+(defsnippet  create-snippet (str template-path "create-survey.html") [:#create-form]
     [])
 
 (defsnippet create-script  (str template-path "create-survey.html") [:#script-area]

@@ -12,7 +12,8 @@
             [clj-time.format :as time-format]
             [clj-time.core :as time-core]
             [clj-time.coerce :refer [from-date]]
-            [dk.ative.docjure.spreadsheet :as xls]))
+            [dk.ative.docjure.spreadsheet :as xls]
+            [clojure.string :refer [join]]))
 
 
 (defn create-js-script-for [view]
@@ -51,8 +52,17 @@
     (let [file-num (io/upload-file "/temp/" file-number)]
       (get-numbers-from-file (str "resources/public/temp/" (file-number :filename)))))
 
-(defn create-survey [user-id name descriptions content selectNumber incentiveOption numbersText numbersFile]
-  (let [survey-id (create-survey-helper {:name name
+(defn create-survey [{:keys [user-id name descriptions content selectNumber
+                             incentiveOption numbersText numbersFile] :as params}]
+  (let [options (map val (dissoc params :user-id :name :descriptions :content :selectNumber
+                               :incentiveOption :numbersText :numbersFile))
+        option-letters (map #(format "(%s) " %) "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        options (->> options
+                     (map list option-letters)
+                     (map #(apply str %))
+                     (join \newline))
+        content (str content \newline options)
+        survey-id (create-survey-helper {:name name
                           :description descriptions
                           :content content
                           :incentive 0
@@ -109,7 +119,7 @@
     (GET "/surveys" [] (surveys (session/get :user_id)))
     (GET "/create" [] (create-survey-form))
     (GET "/signout" [] (signout))
-    (POST "/create" {params :params} (do (println params) (str params)))
+    (POST "/create" {params :params} (create-survey params))
     (GET ["/detail/:id", :id #"[0-9]+"] [id]  (detail-survey (Integer/parseInt id)))
     (GET ["/delete/:id", :id #"[0-9]+"] [id] (delete-survey (Integer/parseInt id)))
     (GET ["/numbers/:id", :id #"[0-9]+"] [id] (view-number (Integer/parseInt id)))
