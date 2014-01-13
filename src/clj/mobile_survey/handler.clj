@@ -9,6 +9,7 @@
              [compojure.core :refer [defroutes]]
              [shoreleave.middleware.rpc :refer [wrap-rpc]]
              [ring.middleware.params :refer [wrap-params]]
+             [mobile-survey.sms :as sms]
              [lobos.config :as dbconf]
              ))
 
@@ -17,6 +18,7 @@
      schema exists, class schema actualize if not."
      []
      (dbconf/init)
+     (sms/start-subscribe)
      (if-not (schema/actualized?)
         (schema/actualize)))
 
