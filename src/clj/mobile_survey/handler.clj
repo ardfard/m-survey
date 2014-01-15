@@ -18,7 +18,7 @@
      schema exists, class schema actualize if not."
      []
      (dbconf/init)
-     (sms/start-subscribe)
+     #_(sms/start-subscribe)
      (if-not (schema/actualized?)
         (schema/actualize)))
 
