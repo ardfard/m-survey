@@ -1,5 +1,6 @@
 (ns mobile-survey.models.schema
-  (:use [lobos.core :only (defcommand migrate)])
+  (:use [lobos [core :only (defcommand migrate)]
+               [config :only (db-spec)]])
   (:require [noir.io :as io]
             [lobos.migration :as lm]))
 
@@ -11,4 +12,4 @@
   []
   (empty? (pending-migrations)))
 
-(def actualize #(binding [lm/*src-directory* "src/clj"] (migrate)))
+(defn [] actualize (binding [lm/*src-directory* "src/clj"] (migrate)))
