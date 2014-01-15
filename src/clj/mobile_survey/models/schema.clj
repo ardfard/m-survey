@@ -12,4 +12,4 @@
   []
   (empty? (pending-migrations)))
 
-(defn [] actualize (binding [lm/*src-directory* "src/clj"] (migrate)))
+(defn actualize [] (binding [lm/*src-directory* "src/clj"] (migrate)))
