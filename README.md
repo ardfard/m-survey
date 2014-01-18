@@ -1,6 +1,6 @@
 # mobile_survey
 
-A Clojure library designed to ... well, that part is up to you.
+A Clojure Web application for real-time survey-monitoring. The backends services use SMS for questionaries delivery.
 
 ## Usage
 
