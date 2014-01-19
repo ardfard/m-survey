@@ -54,8 +54,8 @@
 
 (defn create-survey-handler [{:keys [name descriptions content selectNumber
                              incentiveOption numbersText numbersFile] :as params} user-id]
-  (let [options (vals (dissoc params :name :descriptions :content :selectNumber
-                               :incentiveOption :numbersText :numbersFile))
+  (let [options (map val (sort  (dissoc params :name :descriptions :content :selectNumber
+                               :incentiveOption :numbersText :numbersFile)))
         option-letters (map #(format "(%s) " %) "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
         options (->> options
                      (map list option-letters)

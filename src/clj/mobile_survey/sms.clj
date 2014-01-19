@@ -1,72 +1,45 @@
 (ns mobile-survey.sms
   (:use  compojure.core)
-  (:require [langohr.core :as rmq]
-            [langohr.channel :as lch]
-            [langohr.queue :as lq]
-            [langohr.consumers :as lc]
-            [langohr.basic :as lb]
-            [clj-msgpack.core :as mp]
-            [mobile-survey.models.db :as models]))
+  (:require [clj-msgpack.core :as mp]
+            [mobile-survey.models.db :as models]
+            [cheshire.core :as json]
+            [iron-mq-clojure.client :as mq]))
+
+(def client (let [{:strs [token project_id]} (json/parse-stream (clojure.java.io/reader "iron.json"))]
+              (mq/create-client token project_id)))
 
 (defn message-handler
   [ch {:keys [content-type delivery-tag type] :as meta} ^bytes payload]
   (println (format "[consumer] Received a message: %r, delivery-tag: %d, content type: %s, type: %s"
                    (String. payload "UTF-8") delivery-tag content-type type)))
 
-(defn survey-reply-handler [_ _ ^bytes body]
-  (let [{:strs [id number reply]} (first (mp/unpack body))]
-    (models/update-reply! number id reply)))
+(defn survey-reply-handler [id number reply]
+    (models/update-reply! number id reply))
 
-(defn- publish-survey-to-queue! [{:keys [id content]} responden channel queue]
+#_(defn- publish-survey-to-queue! [{:keys [id content]} responden channel queue]
   (lb/publish channel "" queue (mp/pack {"id" id "content" content "number" responden})
               :content-type "application/json"
               :type nil))
 
-(defn test-publish []
-  (let [conn (rmq/connect {:host "oppinet.ppms.itb.ac.id"
-                           :username "mobile-survey"
-                           :password "lalilulelo"
-                           })
-        ch (lch/open conn)
-        queue-name "mobile-survey.sms"]
-    (lq/declare ch queue-name :durable true :exclusive false :auto-delete false)
-    (publish-survey-to-queue! {:id 1 :content "test survey" } "+6285793268587" ch queue-name)
-    (rmq/close ch)
-    (rmq/close conn)))
-
 (defn publish-survey! [{:keys [id content]} numbers]
-  (let [conn (rmq/connect {:host "oppinet.ppms.itb.ac.id"
-                           :username "mobile-survey"
-                           :password "lalilulelo"
-                           })
-        ch (lch/open conn)
-        queue-name "mobile-survey.sms"]
-    (lq/declare ch queue-name :durable true :exclusive false :auto-delete false)
-    (doseq [number numbers]
-      (publish-survey-to-queue! {:id id :content content} number ch queue-name))
-    (rmq/close ch)
-    (rmq/close conn)))
+  (let [messages (map mq/create-message
+                      (for [number numbers]
+                        (json/generate-string {"id" id "content" content "number" number})))]
+    (println messages)
+    (apply mq/post-messages client "mobile-survey.survey" messages)))
 
-(defn listen-survey-replies []
-  (let [conn (rmq/connect {:host "oppinet.ppms.itb.ac.id"
-                           :username "mobile-survey"
-                           :password "lalilulelo"
-                           })
-        ch (lch/open conn)
-        queue-name "mobile-survey.reply"]
-    (lq/declare ch queue-name :durable true :exclusive false :auto-delete false)
-    (println "Start listening to replies ...")
-    (lc/subscribe ch queue-name survey-reply-handler :auto-ack true)))
+(defn get-all-messages-from-queue []
+  (let [messages (mq/get-messages client "mobile-survey.reply")]
+    (doseq [message messages]
+      (let [{:keys [id number reply]} (get "body" message)]
+        (survey-reply-handler id number reply)
+        (mq/delete-message client "mobile-survey.reply" message)))))
 
-(defn start-subscribe []
-  (let [conn (rmq/connect {:host "oppinet.ppms.itb.ac.id"
-                           :username "ardfard"
-                           :password "lalilulelo"})
-        ch (lch/open conn)
-        queue-name "hello"]
-    (println (format "[main] Connected. Channel id: %d" (.getChannelNumber ch)))
-    (lq/declare ch queue-name :durable false :auto-delete false)
-    (println "Press CTRL+C to cancel.")
-    (
-     lc/subscribe ch queue-name message-handler :auto-ack true)
-  ))
+(defn handle-reply-post-message [body]
+  (println body)
+  (let [{:strs [id number reply]} (json/parse-string body)]
+    (survey-reply-handler id number reply)
+    ""))
+
+(defroutes sms-handler-routes
+  (POST "/sms-handler" {body :body} (handle-reply-post-message (slurp body))))

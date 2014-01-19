@@ -2,6 +2,7 @@
     (require [mobile-survey.models.schema :as schema]
              [mobile-survey.core :refer [app-routes]]
              [mobile-survey.auth :refer [auth-routes]]
+             [mobile-survey.sms :refer [sms-handler-routes]]
              [noir.util.middleware :as middleware]
              [noir.session :as session]
              [compojure.handler :refer [site]]
@@ -29,7 +30,7 @@
 (defn destroy []
     (println "shutting down..."))
 
-(def all-routes [auth-routes app-routes static-routes])
+(def all-routes [auth-routes app-routes sms-handler-routes static-routes])
 
 (defn user-access [request]
     (session/get :user_id))
