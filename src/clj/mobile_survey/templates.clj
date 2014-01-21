@@ -5,6 +5,7 @@
              [clj-time.format :as time-format]
              [clj-time.coerce :refer [from-date]]
              [mobile-survey.models.db :as models]
+             [mobile-survey.common :refer [status-code]]
              [noir.session :as session]))
 
 (def template-path "mobile_survey/templates/")
@@ -33,7 +34,7 @@
         [:td.name] (content name)
         [:td.createdOn] (content (let [formatter (time-format/formatter "dd/MM/yyyy")]
                                  (time-format/unparse formatter (from-date created_on))))
-        [:td.status] (content status)
+        [:td.status] (content (status-code status))
         [:td :> :a.preview] (set-attr :href (str "/detail/" id))
         [:td :> :a.delete] (set-attr :href (str "/delete/" id))))
 

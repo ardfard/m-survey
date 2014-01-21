@@ -1,10 +1,12 @@
-# mobile_survey
+# m-survey
 
 A Clojure Web application for real-time survey-monitoring. The backends services use SMS for questionaries delivery.
 
 ## Usage
 
-FIXME
+cd to m-survey directory
+lein deps
+lein ring server-headless
 
 ## License
 

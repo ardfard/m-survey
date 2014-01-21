@@ -36,6 +36,7 @@
         (mq/delete-message client "mobile-survey.reply" message)))))
 
 (defn handle-reply-post-message [body]
+  (println "handler incoming message...")
   (println body)
   (let [{:strs [id number reply]} (json/parse-string body)]
     (survey-reply-handler id number reply)

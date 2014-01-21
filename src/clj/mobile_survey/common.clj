@@ -5,3 +5,4 @@
              [noir.session :as session]))
 
 
+(def status-code {0 "On progress", 1 "Complete"})

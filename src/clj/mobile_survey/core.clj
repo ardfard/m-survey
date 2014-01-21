@@ -9,6 +9,7 @@
             [mobile-survey.models.db :as models]
             [mobile-survey.templates :as t]
             [mobile-survey.sms :as sms]
+            [mobile-survey.common :refer [status-code]]
             [clj-time.format :as time-format]
             [clj-time.core :as time-core]
             [clj-time.coerce :refer [from-date]]
@@ -22,8 +23,6 @@
                             {:tag :script, :content ("mobile_survey.create_survey.init()")})
         (= view :surveys) '({:tag :script, :attrs {:src "js/mobile-survey.js"}})
         (= view :detail)  '({})))
-
-(def status_code {0 "On progress", 1 "Complete"})
 
 (defn get-numbers-from-file [excel-file]
   (let [wb (xls/load-workbook excel-file)
@@ -84,7 +83,7 @@
           duration (get-duration (from-date created_on))
           numbers (models/get-numbers-for-survey id)
           replied-cnt (count (for [x numbers :when (not= x "")] x))]
-        (t/base (t/detail-snippet id name description content duration (status_code status) (count numbers) replied-cnt)
+        (t/base (t/detail-snippet id name description content duration (status-code status) (count numbers) replied-cnt)
                 (create-js-script-for :detail))))
 
 (defn delete-survey [id]
